@@ -17,7 +17,6 @@
             <span v-if="isInput">{{form.username}}</span>
             <el-input v-else="isInput" type="text" v-model="form.username" suffix-icon="el-icon-tickets"></el-input>
           </transition>
-
         </el-form-item>
         <transition name="fade-transform" mode="out-in">
           <el-form-item label="密码" v-if="!isInput">
@@ -27,12 +26,12 @@
         <el-form-item label="公司">
           <transition name="fade-transform" mode="out-in">
             <span v-if="isInput">{{form.comName}}</span>
-            <el-select v-else="isInput" placeholder="选择公司" v-model="form.comName">
+            <el-select v-else="isInput" placeholder="选择公司" v-model="form.comId">
               <el-option
                 v-for="(item,index) in coms"
                 :key="index"
                 :label="item.comName"
-                :value="item.comName">
+                :value="item.comId">
               </el-option>
             </el-select>
           </transition>
@@ -61,7 +60,8 @@
         form: {
           username: '',
           password: '',
-          comName: ''
+          comName: '',
+          comId:''
         },
 
         isInput: true,
@@ -82,6 +82,7 @@
         this.form.password=userData.password;
         let res = await getCom(userData.comId);
         //console.log(res);
+        this.form.comId=res.data.data[0].comId;
         this.form.comName=res.data.data[0].comName;
       },
       onInput() {

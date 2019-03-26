@@ -83,6 +83,7 @@
       },
       async getCominfo() {
         let{data}= await getUser(JSON.parse(window.localStorage.getItem('userinfo')).id);
+        console.log(data);
         this.comId=data.data[0].comId;
         let res = await getCom(data.data[0].comId);
         console.log(res);
