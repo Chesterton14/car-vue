@@ -6,16 +6,16 @@
         <span class="svg-container">
             <i class="iconfont icon-people"></i>
         </span>
-        <el-input v-model="loginForm.username" name="username" type="text" placeholder="username"></el-input>
+        <el-input v-model="loginForm.username" name="username" type="text" placeholder="用户名"></el-input>
       </el-form-item>
       <el-form-item>
         <span class="svg-container">
             <i class="iconfont icon-lock"></i>
         </span>
-        <el-input v-model="loginForm.password" name="password" type="password" placeholder="password"></el-input>
+        <el-input v-model="loginForm.password" name="password" type="password" placeholder="密码"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" style="width:100%;" @click="toLogin">登录</el-button>
+        <el-button type="primary" style="width:100%;" @click="toLogin" >登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -29,10 +29,13 @@
     data() {
       return {
         loginForm: {
-          username: 'admin',
-          password: '123'
+          username: '',
+          password: ''
         },
       }
+    },
+    created(){
+      this.keyupSubmit()
     },
     methods: {
       toLogin() {
@@ -45,11 +48,11 @@
               message: res.data.msg,
               type: 'success',
               center: true,
-              duration: 1500
+              duration: 2000
             });
             //console.log(res);
             window.localStorage.setItem('userinfo', JSON.stringify(res.data.data));
-            console.log(JSON.parse(window.localStorage.getItem('userinfo')));
+            //console.log(JSON.parse(window.localStorage.getItem('userinfo')));
             this.$store.dispatch('getUser');
             this.$router.push('/index')
           } else {
@@ -57,13 +60,27 @@
               message: res.data.msg,
               type: 'error',
               center: true,
-              duration: 1500
+              duration: 2000
             });
           }
         }).catch((error) => {
           console.log(error.response.data.message)
+          this.$message({
+            message: error.response.data.message,
+            type: 'error',
+            center: true,
+            duration: 1500
+          });
         })
-      }
+      },
+      keyupSubmit(){
+        document.onkeydown=e=>{
+          let _key=window.event.keyCode;
+          if(_key===13){
+            this.toLogin()
+          }
+        }
+      },
     }
 
   }

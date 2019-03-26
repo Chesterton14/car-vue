@@ -9,6 +9,7 @@
       <el-table-column label="用户编号" prop="id" align="center" width="100"></el-table-column>
       <el-table-column label="用户名" prop="username" align="center"></el-table-column>
       <el-table-column label="所属公司" prop="comName" align="center"></el-table-column>
+      <el-table-column label="角色" prop="roleName" align="center"></el-table-column>
       <el-table-column align="center" width="320">
         <template slot="header" slot-scope="scope">
           <el-input v-model="search"  placeholder="输入用户名关键字搜索">
@@ -42,6 +43,16 @@
                   </el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="角色" :label-width="formLabelWidth">
+                <el-select placeholder="选择角色" v-model="form.roleId">
+                  <el-option
+                    v-for="(item,index) in roles"
+                    :key="index"
+                    :label="item.roleName"
+                    :value="item.roleId">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -72,6 +83,16 @@
                   </el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="角色" prop="roleId" :label-width="formLabelWidth">
+                <el-select placeholder="选择角色" v-model="form.roleId">
+                  <el-option
+                    v-for="(item,index) in roles"
+                    :key="index"
+                    :label="item.roleName"
+                    :value="item.roleId">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="newUserFormVisible = false">取 消</el-button>
@@ -85,7 +106,7 @@
 </template>
 
 <script>
-  import {getAlluser, getAllcom, getCom, updateUser, deleteUser, newUserapi} from "../../api";
+  import {getAlluser, getAllcom, getCom, updateUser, deleteUser, newUserapi,getAllroles,getRole} from "../../api";
 
   export default {
     data() {
@@ -103,13 +124,16 @@
           username: '',
           password: '',
           comId: '',
-          comName: ''
+          comName: '',
+          roleId:''
         },
         rules: {
           username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
           password: [{required: true, message: '请输入密码', trigger: 'blur'}],
           comId: [{required: true, message: '请选择公司', trigger: 'blur'}],
-        }
+          roleId: [{required: true, message: '请选择角色', trigger: 'blur'}],
+        },
+        roles:[]
       }
     },
     created() {
@@ -128,7 +152,11 @@
         let orignData = data.data;
         let res = await getAllcom();
         //console.log(res.data.data);
+        let roleres = await getAllroles();
+        //console.log(roleres.data.data);
         let comIds = res.data.data;
+        let roleIds = roleres.data.data;
+        this.roles = roleres.data.data;
         for (let i = 0; i < orignData.length; i++) {
           for (let j = 0; j < comIds.length; j++) {
             if (orignData[i].comId === comIds[j].comId) {
@@ -136,7 +164,13 @@
             }
           }
         }
-        //console.log(orignData);
+        for (let i = 0; i < orignData.length; i++) {
+          for (let j = 0; j < roleIds.length; j++) {
+            if (orignData[i].roleId === roleIds[j].roleId) {
+              orignData[i].roleName = roleIds[j].roleName;
+            }
+          }
+        }
         this.tableData = orignData;
       },
       async handleEdit(index, row) {
@@ -145,10 +179,11 @@
         this.form.id = row.id;
         this.form.username = row.username;
         this.form.password = row.password;
-        //this.form.comId=row.comId;
         let {data} = await getCom(row.comId);
-        //console.log(data);
         this.form.comId = data.data[0].comId;
+        let res = await getRole(row.roleId);
+        //console.log(res);
+        this.form.roleId = res.data.data[0].roleId;
         this.dialogFormVisible = true;
       },
       handleDelete(index, row) {
@@ -172,12 +207,18 @@
           });
         });
       },
-      async onSubmit() {
-        let {data} = await updateUser(this.form.id, this.form);
-        //console.log(data);
-        //console.log(this.form);
-        this.isEdit = Math.random();
-        this.dialogFormVisible = false;
+      onSubmit() {
+        updateUser(this.form.id, this.form).then((res)=>{
+          //console.log(this.form);
+          this.isEdit = Math.random();
+          this.$message({
+            type: "success",
+            message: res.data.msg
+          });
+          this.dialogFormVisible = false;
+        }).catch((error)=>{
+          console.log(error);
+        });
       },
       newUser() {
         this.newUserFormVisible = true;
@@ -185,9 +226,9 @@
       newSubmit(formname) {
         this.$refs[formname].validate((valid) => {
           if (valid) {
-            console.log(this.form);
+            //console.log(this.form);
             newUserapi(this.form).then((res) => {
-              console.log(res.data);
+              //console.log(res.data);
               if (res.data.status == 200) {
                 this.$message({
                   type: "success",

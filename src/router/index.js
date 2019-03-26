@@ -36,7 +36,7 @@ const router = new Router({
         title: '监控中心',
         icon: 'icon-coordinates',
         requiresAuth: true,
-        role: ['admin', 'user']
+        role: 'user',
       },
       children: [
         {
@@ -62,7 +62,7 @@ const router = new Router({
       meta: {
         title: '信息查看',
         icon: 'icon-search',
-        role: ['admin', 'user']
+        role: 'user'
       },
       children: [
         {
@@ -87,7 +87,7 @@ const router = new Router({
       meta: {
         title: '管理中心',
         icon: 'icon-setup',
-        role: ['admin']
+        role: 'admin'
       },
       children: [
         {

@@ -7,7 +7,7 @@ if (window.localStorage.getItem('token')) {
 }
 
 export let instance = Axios.create({
-  baseURL: 'http://127.0.0.1:4000'
+  baseURL: 'http://localhost:4000'
 });
 // respone拦截器
 instance.interceptors.response.use(
@@ -51,7 +51,8 @@ export const updateUser = (id, form) => {
   return instance.put("/users/update?id='" + id + "'", {
     username: form.username,
     password: form.password,
-    comId: form.comId
+    comId: form.comId,
+    roleId:form.roleId
   })
 };
 /*获取所有用户*/
@@ -67,7 +68,8 @@ export const newUserapi = (form) => {
   return instance.post('/users/new', {
     username: form.username,
     password: form.password,
-    comId: form.comId
+    comId: form.comId,
+    roleId:form.roleId
   })
 };
 
@@ -101,6 +103,17 @@ export const newCom = (form) => {
     comAddress: form.comAddress
   })
 };
+
+/**********************角色相关api******************************/
+/*获取所有角色*/
+export const getAllroles =()=>{
+  return instance.get('/role')
+};
+/*根据roleId查找角色*/
+export const getRole=(roleId)=>{
+  return instance.get("/role/search?roleId="+roleId)
+};
+
 
 
 

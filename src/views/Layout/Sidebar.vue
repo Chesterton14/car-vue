@@ -21,12 +21,11 @@
     name: "Sidebar",
     data() {
       return {
-        demo: this.$router.options.routes.filter(item => item.isSidebar === true),
+        demo:[]
       }
     },
     created() {
-      //console.log(this.$route.path);
-
+      this.getSideList();
     },
     methods: {
       handleOpen(key, keyPath) {
@@ -34,6 +33,18 @@
       },
       handleClose(key, keyPath) {
         //console.log(key, keyPath);
+      },
+      getSideList(){
+        let sideBarList=this.$router.options.routes.filter(item => item.isSidebar === true);
+        let userRole=JSON.parse(window.localStorage.getItem('userinfo')).roleId;
+        if(userRole == "1"){
+          this.demo = sideBarList;
+        }else{
+          this.demo=sideBarList.filter(item=>item.meta.role=='user');
+        }
+        //console.log(userRole);
+        //console.log(sideBarList);
+        //let isRole = sideBarList.filter(item => item.meta.role)
       }
     }
   }
