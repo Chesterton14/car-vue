@@ -7,7 +7,7 @@
       <Sidebar></Sidebar>
     </el-aside>
     <el-container>
-      <el-header style="padding: 0">
+      <el-header style="padding: 0;height: 50px" ref="header">
         <Navbar></Navbar>
       </el-header>
       <el-main>
@@ -70,11 +70,11 @@
 
   .fade-transform-enter {
     opacity: 0;
-    transform: translateX(-30px);
+    //transform: translateX(-30px);
   }
 
   .fade-transform-leave-to {
     opacity: 0;
-    transform: translateX(30px);
+    //transform: translateX(30px);
   }
 </style>

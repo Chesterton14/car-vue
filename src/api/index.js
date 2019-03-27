@@ -114,6 +114,13 @@ export const getRole=(roleId)=>{
   return instance.get("/role/search?roleId="+roleId)
 };
 
+/**********************car相关api******************************/
+export const getAllcars=()=>{
+  return instance.get('/cars')
+};
+export const getCar=(carId)=>{
+  return instance.get('/cars/points?carId='+carId)
+};
 
 
 
