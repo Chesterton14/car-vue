@@ -101,6 +101,12 @@ const router = new Router({
           name: 'C',
           meta: {title: '公司管理', requiresAuth: true},
           component: () => import('../views/Manage/com.vue')
+        },
+        {
+          path: '/manage/car',
+          name: 'car',
+          meta: {title: '车辆管理', requiresAuth: true},
+          component: () => import('../views/Manage/car.vue')
         }
       ]
     }

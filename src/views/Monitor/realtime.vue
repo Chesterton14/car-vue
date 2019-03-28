@@ -2,8 +2,31 @@
   <div style="width: 100%;height: 100%">
     <div id="allmap" ref="allmap"></div>
     <div class="carControl">
-      <div class="header">车辆管理
-        <a href="javascript:" @click="isSelect = !isSelect">
+      <el-dialog
+        title="新增车辆"
+        :visible.sync="newComFormVisible"
+        :modal-append-to-body='false'
+        width="25%"
+      >
+        <el-form :rules="rules" ref="ruleForm" :model="form">
+          <el-form-item label="车辆名" prop="label" :label-width="formLabelWidth">
+            <el-input type="text" autocomplete="off" v-model="form.label"></el-input>
+          </el-form-item>
+          <el-form-item label="用户名" prop="label" :label-width="formLabelWidth">
+            <el-input type="text" autocomplete="off" v-model="form.username"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="newComFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="newSubmit('ruleForm')">确 定</el-button>
+        </div>
+      </el-dialog>
+      <div class="header">
+        <a class="add" href="javascript:" @click="newComFormVisible=true">
+          <i class="el-icon-plus"></i>
+        </a>
+        车辆管理
+        <a class="drowdown" href="javascript:" @click="isSelect = !isSelect">
           <i class="el-icon-arrow-down" :class="isSelect?'icon-select':'icon-noselect'"></i>
         </a>
       </div>
@@ -46,7 +69,7 @@
 
 <script>
   import {createMap} from "../../js/map";
-  import {getAllcars, getCar} from "../../api";
+  import {newCar, getCar, getUserCar} from "../../api";
   import {websocketServer} from "../../js/ws";
 
   export default {
@@ -59,8 +82,21 @@
         lat: '123123',
         lng: '123123',
         map: null,
-        curCarId:'',
-        messageBox:null
+        curCarId: '',
+        messageBox: null,
+        userId: '',
+        newComFormVisible: false,
+        formLabelWidth: '100px',
+        timer: null,
+        rules: {
+          label: [{required: true, message: '请输入车辆名', trigger: 'blur'}],
+          username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        },
+        form: {
+          userId: '',
+          label: '',
+          username: ''
+        }
       };
     },
     mounted() {
@@ -69,37 +105,69 @@
     },
     created() {
       this.getCarsData();
+      this.userId = JSON.parse(window.localStorage.getItem('userinfo')).id;
     },
     methods: {
+      newSubmit(formname) {
+        this.$refs[formname].validate((valid) => {
+          if (valid) {
+            this.form.userId = this.userId;
+            console.log(this.form);
+            newCar(this.form).then(res => {
+              this.$message({
+                type: 'success',
+                message: "新增车辆成功"
+              });
+              this.newComFormVisible = false;
+              this.getCarsData();
+            }).catch(error => {
+              console.log(error);
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
       getCarsData() {
-        setInterval(() => {
-          getAllcars().then((res) => {
+        let carTimer = null;
+        carTimer = setInterval(() => {
+          getUserCar(this.userId).then((res) => {
             //console.log(res);
-            this.treeData = res.data.data;
+            if (res.data.status != '200') {
+              this.$message({
+                message: '此用户未注册车辆'
+              });
+              this.isSelect = true;
+              clearInterval(carTimer);
+              return false;
+            } else {
+              this.treeData = res.data.data;
+            }
             //console.log(this.treeData);
           }).catch((error) => {
             console.log(error);
           })
-        }, 1000);
+        }, 2000);
       },
       handleClick(tab, event) {
         //console.log(tab._uid);
         //console.log(this.activeName);
       },
       demo(e) {
-        let curCar = this.treeData.filter(item=>item.carId==this.curCarId);
+        let curCar = this.treeData.filter(item => item.carId == this.curCarId);
         console.log(curCar[0].isOnline);
-        if (curCar[0].isOnline == this.curCarId){
+        if (curCar[0].isOnline == this.curCarId) {
           this.map.clearOverlays();
           let data = JSON.parse(e.data);
           let lng = data.latest.lng;
           let lat = data.latest.lat;
           this.newMarker(lat, lng);
-        }else{
+        } else {
           this.messageBox.close();
           this.$message({
-            type:'error',
-            message:'该车辆已下线'
+            type: 'error',
+            message: '该车辆已下线'
           });
           websocketServer.handClose();
           return false;
@@ -107,12 +175,16 @@
       },
       isChecked(node, data, value) {
         //console.log(node.isOnline);
-        this.curCarId=node.carId;
+        this.curCarId = node.carId;
         if (node.isOnline == 0) {
-          this.$message({message: "该车辆未在线，已显示车辆最后位置",center:true});
           getCar(node.carId).then(res => {
-            //console.log(res.data.latest);
-            this.newMarker(res.data.latest.lat, res.data.latest.lng);
+            //console.log(res.data);
+            if (res.data.status != '200') {
+              this.$message({message: '数据库没有该车辆的数据！'})
+            } else {
+              this.$message({message: "该车辆未在线，已显示车辆最后位置", center: true});
+              this.newMarker(res.data.latest.lat, res.data.latest.lng);
+            }
           })
         } else {
           this.map.clearOverlays();
@@ -193,7 +265,14 @@
       background-color: #409EFF;
       position: relative;
 
-      a, a:hover {
+      .add, .add:hover {
+        color: #ffffff;
+        position: absolute;
+        top: 0;
+        left: 20px;
+      }
+
+      .drowdown, .drowdown:hover {
         color: #ffffff;
         top: 0;
         right: 20px;

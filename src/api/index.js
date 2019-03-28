@@ -115,11 +115,35 @@ export const getRole=(roleId)=>{
 };
 
 /**********************car相关api******************************/
+/*获取所有车辆*/
 export const getAllcars=()=>{
   return instance.get('/cars')
 };
+/*获取指定车辆的轨迹数据*/
 export const getCar=(carId)=>{
   return instance.get('/cars/points?carId='+carId)
+};
+/*获取指定用户的车辆*/
+export const getUserCar=userId=>{
+  return instance.get('/cars/userCars?userId='+userId)
+};
+/*新增车辆*/
+export const newCar=form=>{
+  return instance.post('/cars/newCar',{
+    label:form.label,
+    userId:form.userId,
+    username:form.username
+  })
+};
+/*更新车辆*/
+export const updateCar=(carId,form)=>{
+  return instance.put('/cars/update?carId='+carId,{
+    label:form.label
+  })
+};
+/*删除车辆*/
+export const deleteCar=carId=>{
+  return instance.delete('/cars/delete?carId='+carId)
 };
 
 
