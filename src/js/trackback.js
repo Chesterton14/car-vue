@@ -1,14 +1,15 @@
 export let trackback = (points, map, Begin, End) => {
-
+  console.log(timerArr);
   var donePoints = []; //已经显示的点。
   var bPoints = []; //保存百度化的坐标组。用于重设地图的中心点和显示级别。
   var timerArr = []; //定时器
-  var interval;
-  console.log(points);
-  loadTrackByTime(points);
 
-//根据时间选择。
-  function loadTrackByTime(points) {
+  var interval;
+  //console.log(points);
+
+
+  //根据时间选择。
+
     //清除当前所有的定时器和地图上的覆盖物。
     map.clearOverlays();
     for (var t = 0; t < timerArr.length; t++) {
@@ -32,11 +33,11 @@ export let trackback = (points, map, Begin, End) => {
         searchRes.push(points[i]);
       }
     }
-    console.log(searchRes);
-    trackTime(dateBegin);
+    //console.log(searchRes);
+    //trackTime(dateBegin);
 
     for (var j = 0; j < searchRes.length; j++) {
-      var wait = dateDiff(searchRes[j].time, dateBegin) * 1000; //等待时间。
+      var wait = dateDiff(searchRes[j].time, dateBegin) * 100; //等待时间。
 
       (function () {
 
@@ -65,13 +66,13 @@ export let trackback = (points, map, Begin, End) => {
 
     }
 
-  }
+
 
   function getRandom(n) {
     return Math.floor(Math.random() * n + 1)
   }
 
-//根据点信息实时更新地图显示范围，让轨迹完整显示。设置新的中心点和显示级别
+  //根据点信息实时更新地图显示范围，让轨迹完整显示。设置新的中心点和显示级别
   function setZoom(bPoints) {
     var view = map.getViewport(eval(bPoints));
     var mapZoom = view.zoom;
@@ -79,7 +80,7 @@ export let trackback = (points, map, Begin, End) => {
     map.centerAndZoom(centerPoint, mapZoom);
   }
 
-//在轨迹点上创建图标，并添加点击事件，显示轨迹点信息。points,数组。
+  //在轨迹点上创建图标，并添加点击事件，显示轨迹点信息。points,数组。
   function addMarker(points) {
     var pointsLen = points.length;
     if (pointsLen == 0) {
@@ -105,7 +106,7 @@ export let trackback = (points, map, Begin, End) => {
     }
   }
 
-//点击轨迹点后显示信息窗口
+  //点击轨迹点后显示信息窗口
   function showInfo(thisMaker, point) {
     var sContent =
       "<ul style='margin:0 0 5px 0;padding:0.2em 0'>" +
@@ -117,7 +118,7 @@ export let trackback = (points, map, Begin, End) => {
     thisMaker.openInfoWindow(infoWindow); //图片加载完毕重绘infowindow
   }
 
-//添加线
+  //添加线
   function addLine(points) {
     var linePoints = [];
     var pointsLen = points.length;
@@ -136,20 +137,19 @@ export let trackback = (points, map, Begin, End) => {
     map.addOverlay(polyline); //增加折线
   }
 
-//显示轨迹运行的时间
+  //显示轨迹运行的时间
   function trackTime(beginTime) {
+    clearInterval(interval);
     var beginTimestamp = Date.parse(new Date(beginTime));
     interval = setInterval(function () {
-
       var time = getDate(beginTimestamp).time;
       document.getElementById('realTime').innerHTML = "回放时间" + time;
       beginTimestamp = beginTimestamp + 1000;
-
     }, 1000)
 
   }
 
-//根据时间戳（毫秒），返回处理过后的时间。
+  //根据时间戳（毫秒），返回处理过后的时间。
   function getDate(ms) {
     var res;
     if (ms != undefined) {
@@ -194,7 +194,7 @@ export let trackback = (points, map, Begin, End) => {
     return res;
   }
 
-//求时间差的方法
+  //求时间差的方法
   function dateDiff(date1, date2) {
     var type1 = typeof date1,
       type2 = typeof date2;
@@ -209,7 +209,7 @@ export let trackback = (points, map, Begin, End) => {
     return (date1 - date2) / 1000; //结果是秒
   }
 
-//字符串转成Time(dateDiff)所需方法
+  //字符串转成Time(dateDiff)所需方法
   function stringToTime(string) {
     var f = string.split(' ', 2);
     var d = (f[0] ? f[0] : '').split('-', 3);
@@ -225,4 +225,3 @@ export let trackback = (points, map, Begin, End) => {
 
   }
 };
-
