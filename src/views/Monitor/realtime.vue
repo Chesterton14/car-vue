@@ -175,7 +175,9 @@
           this.messageBox.close();
           this.$message({
             type: 'error',
-            message: '该车辆已下线'
+            message: '该车辆已下线',
+            duration: 0,
+            showClose: true
           });
           websocketServer.handClose();
           return false;
