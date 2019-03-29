@@ -41,16 +41,7 @@
     name: "carPoints",
     data() {
       return {
-        tableData: [
-          {
-            carId:'carId',
-            label:'label',
-            lng:'lng',
-            lat:'lat',
-            time:'time',
-            position:'position'
-          }
-        ],
+        tableData: [],
         userId: '',
         search: '',
         total:0,
@@ -75,7 +66,7 @@
           } else{
             getAllcars().then(cars=>{
               let carsData = cars.data.data;
-              console.log(carsData);
+              //console.log(carsData);
               for (let i =0;i<carsData.length;i++){
                 for (let j =0;j<points.length;j++){
                   if (points[j].carId==carsData[i].carId) {
@@ -83,7 +74,7 @@
                   }
                 }
               }
-              console.log(points);
+              //console.log(points);
               this.tableData = points;
               this.total=res.data.total;
             });
@@ -92,13 +83,13 @@
         })
       },
       handleSizeChange(val){
-        console.log(val);
+        //console.log(val);
         this.pageSize = val;
         this.currentPage=1;
         this.getData()
       },
       handleCurrentChange(val){
-        console.log(val);
+        //console.log(val);
         this.currentPage=val;
         this.getData()
       },

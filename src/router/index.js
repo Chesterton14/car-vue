@@ -8,7 +8,7 @@ import {Message} from 'element-ui';
 Vue.use(Router);
 
 const router = new Router({
-  mode: 'history',
+  //mode: 'history',
   routes: [
     {path: '/', name: 'login', component: () => import('../views/Login.vue')},
     {path: '*', name: '404', component: Page404},

@@ -1,72 +1,58 @@
 export let trackback = (points, map, Begin, End) => {
-  console.log(timerArr);
   var donePoints = []; //已经显示的点。
   var bPoints = []; //保存百度化的坐标组。用于重设地图的中心点和显示级别。
   var timerArr = []; //定时器
-
   var interval;
-  //console.log(points);
-
 
   //根据时间选择。
+  //清除当前所有的定时器和地图上的覆盖物。
+  map.clearOverlays();
+  for (var t = 0; t < timerArr.length; t++) {
+    clearTimeout(timerArr[t]);
+  }
+  timerArr = [];
+  clearInterval(interval);
+  bPoints.length = 0;
+  donePoints.length = 0;
 
-    //清除当前所有的定时器和地图上的覆盖物。
-    map.clearOverlays();
-    for (var t = 0; t < timerArr.length; t++) {
-      clearTimeout(timerArr[t]);
+  var dateBegin = Begin;
+  var dateEnd = End;
+
+  //从原始数组中查询符合条件的坐标点。
+  var pointsLen = points.length;
+  var searchRes = []; //用来装符合条件的坐标信息。
+
+  //满足条件的放上去。
+  for (var i = 0; i < pointsLen; i++) {
+    if (dateDiff(points[i].time, dateBegin) > 0 && dateDiff(points[i].time, dateEnd) < 0) {
+      searchRes.push(points[i]);
     }
-    timerArr = [];
-    clearInterval(interval);
-    bPoints.length = 0;
-    donePoints.length = 0;
+  }
+  //console.log(searchRes);
+  //trackTime(dateBegin);
 
-    var dateBegin = Begin;
-    var dateEnd = End;
-
-    //从原始数组中查询符合条件的坐标点。
-    var pointsLen = points.length;
-    var searchRes = []; //用来装符合条件的坐标信息。
-
-    //满足条件的放上去。
-    for (var i = 0; i < pointsLen; i++) {
-      if (dateDiff(points[i].time, dateBegin) > 0 && dateDiff(points[i].time, dateEnd) < 0) {
-        searchRes.push(points[i]);
-      }
-    }
-    //console.log(searchRes);
-    //trackTime(dateBegin);
-
-    for (var j = 0; j < searchRes.length; j++) {
-      var wait = dateDiff(searchRes[j].time, dateBegin) * 100; //等待时间。
-
-      (function () {
-
-        var pointAg = [searchRes[j]],
-          timer; //闭包
-        timer = setTimeout(function () {
-
-          var doneLen = donePoints.length;
-          var linePoints = [];
-
-          if (doneLen != 0) {
-            linePoints.push(donePoints[doneLen - 1]);
-          }
-          linePoints.push(pointAg[0]);
-          donePoints.push(pointAg[0]);
-          addLine(linePoints); //把原始数据的轨迹线添加到地图上。
-
-          addMarker(pointAg);
-
-          bPoints.push(new BMap.Point(pointAg[0].lng, pointAg[0].lat));
-          setZoom(bPoints);
-
-        }, wait);
-        timerArr.push(timer);
-      })();
-
-    }
-
-
+  for (var j = 0; j < searchRes.length; j++) {
+    //var wait = dateDiff(searchRes[j].time, dateBegin) * 100; //等待时间。
+    var timeDelay=1000;
+    (function () {
+      var pointAg = [searchRes[j]],
+        timer; //闭包
+      timer = setTimeout(function () {
+        var doneLen = donePoints.length;
+        var linePoints = [];
+        if (doneLen != 0) {
+          linePoints.push(donePoints[doneLen - 1]);
+        }
+        linePoints.push(pointAg[0]);
+        donePoints.push(pointAg[0]);
+        addLine(linePoints); //把原始数据的轨迹线添加到地图上。
+        addMarker(pointAg);
+        bPoints.push(new BMap.Point(pointAg[0].lng, pointAg[0].lat));
+        setZoom(bPoints);
+      }, timeDelay);
+      timerArr.push(timer);
+    })();
+  }
 
   function getRandom(n) {
     return Math.floor(Math.random() * n + 1)
@@ -108,12 +94,9 @@ export let trackback = (points, map, Begin, End) => {
 
   //点击轨迹点后显示信息窗口
   function showInfo(thisMaker, point) {
-    var sContent =
-      "<ul style='margin:0 0 5px 0;padding:0.2em 0'>" +
-      "<li style='line-height: 26px;font-size: 15px;'>" +
-      "<span style='width: 50px;display: inline-block;'>数据：</span>" + "lng:" + point.lng + "，" + "lat:" + point.lat + "</li>" +
-      "<li style='line-height: 26px;font-size: 15px;'><span style='width: 50px;display: inline-block;'>时间：</span>" + point.time + "</li>" +
-      "</ul>";
+    var sContent = "<p>lng：" + point.lng + "</p>"+
+                  "<p>lat：" + point.lat + "</p>"+
+                  "<p>时间：" + point.time  + "</p>";
     var infoWindow = new BMap.InfoWindow(sContent); // 创建信息窗口对象
     thisMaker.openInfoWindow(infoWindow); //图片加载完毕重绘infowindow
   }
@@ -153,7 +136,7 @@ export let trackback = (points, map, Begin, End) => {
   function getDate(ms) {
     var res;
     if (ms != undefined) {
-      var today = new Date()
+      var today = new Date();
       today.setTime(ms);
     } else {
       var today = new Date();
@@ -222,6 +205,5 @@ export let trackback = (points, map, Begin, End) => {
       parseInt(t[1], 10) || null,
       parseInt(t[2], 10) || null
     )).getTime();
-
   }
 };

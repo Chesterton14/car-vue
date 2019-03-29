@@ -1,83 +1,81 @@
 export let websocketServer = {
-  url:'',
-  lockReconnect:false,
-  ws:null,
-  carId:'',
-  cb:null,
-  createWebSocket(){
-    try{
-      if ('WebSocket' in window){
+  url: '',
+  lockReconnect: false,
+  ws: null,
+  carId: '',
+  cb: null,
+  createWebSocket() {
+    try {
+      if ('WebSocket' in window) {
         this.ws = new WebSocket(this.url);
-      }else if('MozWebSocket' in window){
+      } else if ('MozWebSocket' in window) {
         this.ws = new WebSocket(this.url);
-      }else{
+      } else {
         alert("您的浏览器不支持websocket协议,建议使用新版谷歌、火狐等浏览器，请勿使用IE10以下浏览器，360浏览器请使用极速模式，不要使用兼容模式！")
       }
       this.initEvent();
       this.windowClose();
-    }catch(err){
+    } catch (err) {
       console.log(err);
       this.reconnect();
     }
   },
   initEvent() {
-    this.ws.onopen = ()=> {
+    this.ws.onopen = () => {
       this.heartCheck.reset(); //心跳检测重置
       this.heartCheck.start(this.ws); //心跳检测重置
       console.log("ws连接成功！" + new Date().format("yyyy-MM-dd hh:mm:ss"));
-      this.msg = '已建立连接,实时监控中...';
-      this.ws.send("carId="+this.carId)
+      this.ws.send("carId=" + this.carId)
     };
-    this.ws.onmessage = event=> {//如果获取到消息，心跳检测重置
-      this.heartCheck.reset(); //拿到任何消息都说明当前连接是正常的
-      this.heartCheck.start(this.ws,this.carId); //拿到任何消息都说明当前连接是正常的
+    this.ws.onmessage = event => {
+      this.heartCheck.reset();
+      this.heartCheck.start(this.ws, this.carId);
       this.cb(event);
-      //this.handMsg(event);
     };
-    this.ws.onclose = ()=> {
+    this.ws.onclose = () => {
       console.log("ws连接关闭！" + new Date().format("yyyy-MM-dd hh:mm:ss"));
       this.reconnect();
     };
-    this.ws.onerror = () =>{
-      console.log("ws连接错误！");
+    this.ws.onerror = () => {
+      console.log("ws连接错误！" + new Date().format("yyyy-MM-dd hh:mm:ss"));
       this.reconnect();
     };
   },
-  heartCheck:{
-    timeout:5000,
-    timer:null,
-    serverTimer:null,
-    reset(){
+  heartCheck: {
+    timeout: 5000,
+    timer: null,
+    serverTimer: null,
+    reset() {
       clearTimeout(this.timer);
       clearTimeout(this.serverTimer);
     },
-    start(ws,carId){
-      //console.log(ws);
-      if(ws === null){
+    start(ws, carId) {
+      if (ws === null) {
         console.log("ws已关闭");
         return false;
       }
-      this.timer=setTimeout(()=>{
-        ws.send("carId="+carId);
-        //console.log('ping');
-        this.serverTimer=setTimeout(()=>{
+      this.timer = setTimeout(() => {
+        ws.send("carId=" + carId);
+        this.serverTimer = setTimeout(() => {
           ws.close();
-        },this.timeout)
-      },this.timeout)
+        }, this.timeout)
+      }, this.timeout)
     }
   },
-  reconnect(){
+  reconnect() {
     if (this.lockReconnect) return;
     this.lockReconnect = true;
-    setTimeout(()=>{
+    setTimeout(() => {
       this.createWebSocket();
-      this.lockReconnect=false;
-    },2000)
+      this.lockReconnect = false;
+    }, 2000)
   },
-  windowClose(){
-    window.onbeforeunload = () =>{this.ws.close()};
+  windowClose() {
+    window.onbeforeunload = () => {
+      this.ws.close()
+    };
   },
-  handClose(){
+  handClose() {
     this.ws.close();
     this.lockReconnect = true;
   }

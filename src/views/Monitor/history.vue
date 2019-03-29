@@ -2,12 +2,12 @@
   <div style="width: 100%;height: 100%">
     <div id="allmap"></div>
     <div class="control">
-      <a href="javascript:" @click="isSelect = !isSelect">
+      <a href="#" @click="isSelect = !isSelect">
         <i class="el-icon-arrow-down" :class="isSelect?'icon-select':'icon-noselect'"></i>
       </a>
       <el-collapse-transition>
         <div v-if="!isSelect">
-          <el-select v-model="form.carId" placeholder="请选择车辆">
+          <el-select v-model="form.carId" placeholder="选择车辆">
             <el-option
               v-for="item in cars"
               :key="item.carId"
@@ -81,6 +81,10 @@
               } else {
                 let points = res.data.data;
                 trackback(points, this.map, this.form.time[0], this.form.time[1]);
+                this.$message({
+                  type:'success',
+                  message:'数据查询成功，正在回放改时间段内历史轨迹=>开始时间：'+this.form.time[0]+'结束时间：'+this.form.time[1]
+                })
               }
             })
             .catch(error => {
