@@ -34,11 +34,12 @@
 <script>
 import { createMap } from "../../js/map";
 import { trackback } from "../../js/trackback";
-import { getAllcars, getCar } from "../../api";
+import { getAllcars, getCar ,getUserCar} from "../../api";
 
 export default {
   name: "history",
   created() {
+    this.userId=JSON.parse(window.localStorage.getItem('userinfo')).id;
     this.getCasData();
   },
   mounted() {
@@ -54,7 +55,8 @@ export default {
       },
       cars: [],
       map: null,
-      realTime:''
+      realTime:'',
+      userId:''
     };
   },
   methods: {
@@ -87,7 +89,7 @@ export default {
       }
     },
     getCasData() {
-      getAllcars().then(res => {
+      getUserCar(this.userId).then(res => {
         this.cars = res.data.data;
       });
     }
