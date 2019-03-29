@@ -141,10 +141,21 @@ export const updateCar=(carId,form)=>{
     label:form.label
   })
 };
+/*更新车辆位置数据*/
+export const updateCarPosition=(pointId,address)=>{
+  return instance.put('/cars/update/position?pointId='+pointId,{
+    position:address
+  })
+};
 /*删除车辆*/
 export const deleteCar=carId=>{
   return instance.delete('/cars/delete?carId='+carId)
 };
+/*获取用户车辆的数据*/
+export const getUserCarPoints=(userId,currentPage,pageSize)=>{
+  return instance.get('/cars/points/userCar?userId='+userId+'&currentPage='+currentPage+'&pageSize='+pageSize)
+};
+
 
 
 

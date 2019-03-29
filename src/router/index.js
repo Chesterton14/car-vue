@@ -76,6 +76,18 @@ const router = new Router({
           component: () => import('../views/Setting/company.vue'),
           name: 'Company',
           meta: {title: '公司信息', requiresAuth: true}
+        },
+        {
+          path: '/setting/car',
+          component: () => import('../views/Setting/car.vue'),
+          name: 'carMsg',
+          meta: {title: '车辆信息', requiresAuth: true}
+        },
+        {
+          path: '/setting/carPoints',
+          component: () => import('../views/Setting/carPoints.vue'),
+          name: 'carPoints',
+          meta: {title: '行驶信息', requiresAuth: true}
         }
       ]
     },

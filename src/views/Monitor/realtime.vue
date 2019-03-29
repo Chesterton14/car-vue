@@ -69,7 +69,7 @@
 
 <script>
   import {createMap} from "../../js/map";
-  import {newCar, getCar, getUserCar} from "../../api";
+  import {newCar, getCar, getUserCar,updateCarPosition} from "../../api";
   import {websocketServer} from "../../js/ws";
 
   export default {
@@ -88,6 +88,7 @@
         newComFormVisible: false,
         formLabelWidth: '100px',
         timer: null,
+        pointId:'',
         rules: {
           label: [{required: true, message: '请输入车辆名', trigger: 'blur'}],
           username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
@@ -162,6 +163,7 @@
           let data = JSON.parse(e.data);
           let lng = data.latest.lng;
           let lat = data.latest.lat;
+          this.pointId=data.latest.pointId;
           this.newMarker(lat, lng);
         } else {
           this.messageBox.close();
@@ -183,6 +185,7 @@
               this.$message({message: '数据库没有该车辆的数据！'})
             } else {
               this.$message({message: "该车辆未在线，已显示车辆最后位置", center: true});
+              this.pointId=res.data.latest.pointId;
               this.newMarker(res.data.latest.lat, res.data.latest.lng);
             }
           })
@@ -227,6 +230,7 @@
             "<p>附近：" + surroundingPois[0].title + "</p>";
           let infoWindow = new BMap.InfoWindow(content, {title: "当前车辆信息"});
           this.map.openInfoWindow(infoWindow, point);
+          updateCarPosition(this.pointId,address)
         }, 1000);
         marker.addEventListener("click", () => {
           let content = "<p>经度：" + lng + "</p>" +
