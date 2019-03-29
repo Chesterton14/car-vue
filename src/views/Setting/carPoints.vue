@@ -7,7 +7,7 @@
       <el-button type="success"  @click="exportExcel">导出为Excel表格</el-button>
     </div>
     <el-table
-      :data="tableData"
+      :data="tableData.filter(data => !search || data.label.toLowerCase().includes(search.toLowerCase()))"
       style="width: 95%;display: inline-block;margin-top: 20px"
       id="out-table"
       border>
