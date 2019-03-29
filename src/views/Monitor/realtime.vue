@@ -97,7 +97,8 @@
           userId: '',
           label: '',
           username: ''
-        }
+        },
+        interval:null
       };
     },
     mounted() {
@@ -107,6 +108,10 @@
     created() {
       this.getCarsData();
       this.userId = JSON.parse(window.localStorage.getItem('userinfo')).id;
+    },
+    beforeRouteLeave(to,from,next){
+      clearInterval(this.interval);
+      next()
     },
     methods: {
       newSubmit(formname) {
@@ -149,7 +154,8 @@
           }).catch((error) => {
             console.log(error);
           })
-        }, 2000);
+        }, 1000);
+        this.interval=carTimer;
       },
       handleClick(tab, event) {
         //console.log(tab._uid);

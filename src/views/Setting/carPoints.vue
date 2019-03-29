@@ -41,7 +41,16 @@
     name: "carPoints",
     data() {
       return {
-        tableData: [],
+        tableData: [
+          {
+            carId:'carId',
+            label:'label',
+            lng:'lng',
+            lat:'lat',
+            time:'time',
+            position:'position'
+          }
+        ],
         userId: '',
         search: '',
         total:0,
