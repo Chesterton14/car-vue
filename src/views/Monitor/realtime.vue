@@ -10,10 +10,10 @@
       >
         <el-form :rules="rules" ref="ruleForm" :model="form">
           <el-form-item label="车辆名" prop="label" :label-width="formLabelWidth">
-            <el-input type="text" autocomplete="off" v-model="form.label"></el-input>
+            <el-input type="text" autocomplete="off" v-model="form.label" placeholder="输入车辆名"></el-input>
           </el-form-item>
           <el-form-item label="用户名" prop="label" :label-width="formLabelWidth">
-            <el-input type="text" autocomplete="off" v-model="form.username"></el-input>
+            <el-input type="text" autocomplete="off" v-model="form.username" placeholder="输入车辆绑定的用户"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -164,7 +164,7 @@
       demo(e) {
         let curCar = this.treeData.filter(item => item.carId == this.curCarId);
         console.log(curCar[0].isOnline);
-        if (curCar[0].isOnline == this.curCarId) {
+        if (curCar[0].isOnline == 1) {
           this.map.clearOverlays();
           let data = JSON.parse(e.data);
           let lng = data.latest.lng;

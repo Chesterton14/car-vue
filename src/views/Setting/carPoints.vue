@@ -51,8 +51,11 @@
     },
     created() {
       this.userId = JSON.parse(window.localStorage.getItem('userinfo')).id;
-      this.getData()
+
     },
+    mounted(){
+      this.getData()
+  },
     methods: {
       getData() {
         getUserCarPoints(this.userId,this.currentPage,this.pageSize).then(res => {
