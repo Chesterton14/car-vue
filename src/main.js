@@ -11,6 +11,10 @@ Vue.use(ElementUI);
 
 import 'normalize.css';
 
+import JsonExcel from 'vue-json-excel'
+
+Vue.component('downloadExcel', JsonExcel);
+
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */

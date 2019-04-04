@@ -4,7 +4,15 @@
       <el-input class="searchInput" v-model="search" placeholder="输入车辆名关键字搜索">
         <i slot="prefix" class="el-input__icon el-icon-search" style="margin-left: 2px"></i>
       </el-input>
-      <el-button type="success" @click="exportExcel">导出为Excel表格</el-button>
+      <div style="display: inline-block">
+        <download-excel
+          :data="tableData"
+          :fields="fields"
+        >
+          <el-button type="success">导出为Excel表格</el-button>
+        </download-excel>
+      </div>
+
     </div>
     <el-table
       :data="tableData.filter(data => !search || data.label.toLowerCase().includes(search.toLowerCase()))"
@@ -33,15 +41,29 @@
 </template>
 
 <script>
-  import {getUserCarPoints, getAllcars} from "../../api";
-  import FileSaver from 'file-saver';
-  import XLSX from 'xlsx';
+  import {getUserCarPoints} from "../../api";
 
   export default {
     name: "carPoints",
     data() {
       return {
         tableData: [],
+        fields:{
+          "车辆编号":'carId',
+          "车辆名":'label',
+          "经度":'lng',
+          "纬度":'lat',
+          "时间":'time',
+          "位置":'position'
+        },
+        json_meta: [
+          [
+            {
+              'key': 'charset',
+              'value': 'utf-8'
+            }
+          ]
+        ],
         userId: '',
         search: '',
         total: 0,
@@ -81,16 +103,7 @@
         this.getData()
       },
       exportExcel() {
-        /* generate workbook object from table */
-        var wb = XLSX.utils.table_to_book(document.querySelector('#out-table'));
-        /* get binary string as output */
-        var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: true, type: 'array'});
-        try {
-          FileSaver.saveAs(new Blob([wbout], {type: 'application/octet-stream'}), 'sheetjs.xlsx')
-        } catch (e) {
-          if (typeof console !== 'undefined') console.log(e, wbout)
-        }
-        return wbout
+
       }
     }
   }
