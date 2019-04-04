@@ -10,7 +10,7 @@
       <el-table-column label="公司地址" prop="comAddress" align="center"></el-table-column>
       <el-table-column align="center" width="320">
         <template slot="header" slot-scope="scope">
-          <el-input v-model="search"  placeholder="输入用户名关键字搜索">
+          <el-input v-model="search"  placeholder="输入公司名关键字搜索">
             <i slot="prefix" class="el-input__icon el-icon-search" style="margin-left: 10px"></i>
           </el-input>
         </template>
@@ -65,6 +65,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage4"
+        :page-sizes="[10, 20]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="3">
+      </el-pagination>
+    </div>
   </div>
 </template>
 

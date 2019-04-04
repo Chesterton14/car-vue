@@ -39,13 +39,22 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage4"
+        :page-sizes="[10, 20]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="2">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
   import {getUserCar,updateCar,deleteCar} from "../../api";
-  import FileSaver from 'file-saver'
-  import XLSX from 'xlsx'
 
   export default {
     name: "car",

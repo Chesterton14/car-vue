@@ -1,11 +1,12 @@
 <template>
-    <div style="text-align: center;width: 100%;height: 100%">
-      <el-card class="box-card">
+    <div style="text-align: center;width: 100%;height: 100%;">
+      <el-card class="box-card" style="margin-top: 50px">
         <div slot="header" class="clearfix">
           <span><h1>基于Node.js的车联网监控平台</h1></span>
         </div>
         <div class="text item">
-          <h3>主要功能是车辆实时监控、历史轨迹及系统设置。主要包括由车辆实时位置定位，车辆追踪，历史行驶轨迹回放，添加车辆，用户注册等功能。</h3>
+          <h2>车联网监控平台可完成对车辆的实时监控，对车辆行驶信息的分析，实现用户对车辆的信息化管理</h2>
+          <h3>主要功能包括：车辆实时监控、车辆历史轨迹回放、车辆行驶信息统计报表、车辆管理、平台用户管理</h3>
         </div>
       </el-card>
     </div>
