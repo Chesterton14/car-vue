@@ -112,6 +112,7 @@
     },
     beforeRouteLeave(to,from,next){
       clearInterval(this.interval);
+      this.messageBox.close();
       next()
     },
     methods: {
@@ -164,15 +165,14 @@
       },
       demo(e) {
         let curCar = this.treeData.filter(item => item.carId == this.curCarId);
-        console.log("isOnline",curCar[0].isOnline);
-        console.log("isMobile",curCar[0].isMobile);
+        //console.log("isOnline",curCar[0].isOnline);
+        //console.log("isMobile",curCar[0].isMobile);
         if (curCar[0].isOnline == 1) {
           if (curCar[0].isMobile == 1){
             //this.$message({message: "移动终端", center: true});
             this.map.clearOverlays();
             let data = JSON.parse(e.data);
-            let pointed = transform(data.latest.lat,data.latest.lng)
-            console.log(pointed);
+            let pointed = transform(data.latest.lat,data.latest.lng);
             this.pointId=data.latest.pointId;
             this.newMarker(pointed.bd_lat, pointed.bd_lon);
           }else{
