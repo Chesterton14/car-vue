@@ -69,7 +69,8 @@
 
 <script>
   import {createMap} from "../../js/map";
-  import {newCar, getCar, getUserCar,updateCarPosition} from "../../api";
+  import {transform} from "../../js/gcj02tobd02";
+  import {newCar, getCar, getUserCar,updateCarPosition,gcj02tobd} from "../../api";
   import {websocketServer} from "../../js/ws";
 
   export default {
@@ -163,14 +164,26 @@
       },
       demo(e) {
         let curCar = this.treeData.filter(item => item.carId == this.curCarId);
-        console.log(curCar[0].isOnline);
+        console.log("isOnline",curCar[0].isOnline);
+        console.log("isMobile",curCar[0].isMobile);
         if (curCar[0].isOnline == 1) {
-          this.map.clearOverlays();
-          let data = JSON.parse(e.data);
-          let lng = data.latest.lng;
-          let lat = data.latest.lat;
-          this.pointId=data.latest.pointId;
-          this.newMarker(lat, lng);
+          if (curCar[0].isMobile == 1){
+            //this.$message({message: "移动终端", center: true});
+            this.map.clearOverlays();
+            let data = JSON.parse(e.data);
+            let pointed = transform(data.latest.lat,data.latest.lng)
+            console.log(pointed);
+            this.pointId=data.latest.pointId;
+            this.newMarker(pointed.bd_lat, pointed.bd_lon);
+          }else{
+            this.map.clearOverlays();
+            let data = JSON.parse(e.data);
+            let lng = data.latest.lng;
+            let lat = data.latest.lat;
+            this.pointId=data.latest.pointId;
+            this.newMarker(lat, lng);
+          }
+
         } else {
           this.messageBox.close();
           this.$message({
@@ -184,7 +197,7 @@
         }
       },
       isChecked(node, data, value) {
-        //console.log(node.isOnline);
+        //console.log(node);
         this.curCarId = node.carId;
         if (node.isOnline == 0) {
           getCar(node.carId).then(res => {
@@ -192,9 +205,17 @@
             if (res.data.status != '200') {
               this.$message({message: '数据库没有该车辆的数据！'})
             } else {
-              this.$message({message: "该车辆未在线，已显示车辆最后位置", center: true});
-              this.pointId=res.data.latest.pointId;
-              this.newMarker(res.data.latest.lat, res.data.latest.lng);
+              if (node.isMobile == 1){
+                this.$message({message: "移动终端", center: true});
+                let pointed = transform(res.data.latest.lat,res.data.latest.lng)
+                console.log(pointed);
+                this.pointId=res.data.latest.pointId;
+                this.newMarker(pointed.bd_lat, pointed.bd_lon);
+              }else{
+                this.$message({message: "该车辆未在线，已显示车辆最后位置", center: true});
+                this.pointId=res.data.latest.pointId;
+                this.newMarker(res.data.latest.lat, res.data.latest.lng);
+              }
             }
           })
         } else {

@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import router from '../router'
-
+import {Message} from "element-ui";
 
 if (window.localStorage.getItem('token')) {
   Axios.defaults.headers.common['Authorization'] = `Bearer ` + window.localStorage.getItem('token')
@@ -9,7 +9,19 @@ if (window.localStorage.getItem('token')) {
 export let instance = Axios.create({
   baseURL: 'http://localhost:4000'
 });
-// respone拦截器
+//request拦截器
+/*instance.interceptors.request.use(
+  config => {
+    config.headers = {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    return config;
+  },
+  error => {
+    console.log(error);
+  }
+)*/
+// response拦截器
 instance.interceptors.response.use(
   response => {
     return response
@@ -18,6 +30,12 @@ instance.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
+          Message({
+            message: "登录以过期",
+            type: 'error',
+            center: true,
+            duration: 1500
+          });
           router.replace({
             path: '/',
             query: {redirect: router.currentRoute.fullPath} // 将跳转的路由path作为参数，登录成功后跳转到该路由
@@ -52,7 +70,7 @@ export const updateUser = (id, form) => {
     username: form.username,
     password: form.password,
     comId: form.comId,
-    roleId:form.roleId
+    roleId: form.roleId
   })
 };
 /*获取所有用户*/
@@ -69,7 +87,7 @@ export const newUserapi = (form) => {
     username: form.username,
     password: form.password,
     comId: form.comId,
-    roleId:form.roleId
+    roleId: form.roleId
   })
 };
 
@@ -106,55 +124,57 @@ export const newCom = (form) => {
 
 /**********************角色相关api******************************/
 /*获取所有角色*/
-export const getAllroles =()=>{
+export const getAllroles = () => {
   return instance.get('/role')
 };
 /*根据roleId查找角色*/
-export const getRole=(roleId)=>{
-  return instance.get("/role/search?roleId="+roleId)
+export const getRole = (roleId) => {
+  return instance.get("/role/search?roleId=" + roleId)
 };
 
 /**********************car相关api******************************/
 /*获取所有车辆*/
-export const getAllcars=()=>{
+export const getAllcars = () => {
   return instance.get('/cars')
 };
 /*获取指定车辆的轨迹数据*/
-export const getCar=(carId)=>{
-  return instance.get('/cars/points?carId='+carId)
+export const getCar = (carId) => {
+  return instance.get('/cars/points?carId=' + carId)
 };
 /*获取指定用户的车辆*/
-export const getUserCar=userId=>{
-  return instance.get('/cars/userCars?userId='+userId)
+export const getUserCar = userId => {
+  return instance.get('/cars/userCars?userId=' + userId)
 };
 /*新增车辆*/
-export const newCar=form=>{
-  return instance.post('/cars/newCar',{
-    label:form.label,
-    userId:form.userId,
-    username:form.username
+export const newCar = form => {
+  return instance.post('/cars/newCar', {
+    label: form.label,
+    userId: form.userId,
+    username: form.username
   })
 };
 /*更新车辆*/
-export const updateCar=(carId,form)=>{
-  return instance.put('/cars/update?carId='+carId,{
-    label:form.label
+export const updateCar = (carId, form) => {
+  return instance.put('/cars/update?carId=' + carId, {
+    label: form.label
   })
 };
 /*更新车辆位置数据*/
-export const updateCarPosition=(pointId,address)=>{
-  return instance.put('/cars/update/position?pointId='+pointId,{
-    position:address
+export const updateCarPosition = (pointId, address) => {
+  return instance.put('/cars/update/position?pointId=' + pointId, {
+    position: address
   })
 };
 /*删除车辆*/
-export const deleteCar=carId=>{
-  return instance.delete('/cars/delete?carId='+carId)
+export const deleteCar = carId => {
+  return instance.delete('/cars/delete?carId=' + carId)
 };
 /*获取用户车辆的数据*/
-export const getUserCarPoints=(userId,currentPage,pageSize)=>{
-  return instance.get('/cars/points/userCar?userId='+userId+'&currentPage='+currentPage+'&pageSize='+pageSize)
+export const getUserCarPoints = (userId, currentPage, pageSize) => {
+  return instance.get('/cars/points/userCar?userId=' + userId + '&currentPage=' + currentPage + '&pageSize=' + pageSize)
 };
+
+
 
 
 
