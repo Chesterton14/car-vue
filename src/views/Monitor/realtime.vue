@@ -112,7 +112,6 @@
     },
     beforeRouteLeave(to,from,next){
       clearInterval(this.interval);
-      this.messageBox.close();
       next()
     },
     methods: {
