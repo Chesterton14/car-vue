@@ -10,17 +10,15 @@ export let instance = Axios.create({
   baseURL: 'http://localhost:4000'
 });
 //request拦截器
-/*instance.interceptors.request.use(
+instance.interceptors.request.use(
   config => {
-    config.headers = {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
     return config;
   },
   error => {
     console.log(error);
+    return Promise.reject(error.response)
   }
-)*/
+)
 // response拦截器
 instance.interceptors.response.use(
   response => {

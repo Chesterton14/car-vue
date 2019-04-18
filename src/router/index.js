@@ -3,9 +3,11 @@ import Router from 'vue-router'
 import Page404 from '../views/404.vue'
 import Index from '../views/Layout/Index.vue'
 import store from '../store/index'
-import {Message} from 'element-ui';
+import {Message} from 'element-ui'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
-Vue.use(Router);
+Vue.use(Router)
 
 const router = new Router({
   //mode: 'history',
@@ -127,11 +129,13 @@ const router = new Router({
 // 注册全局钩子用来拦截导航
 router.beforeEach((to, from, next) => {
   let token = window.localStorage.getItem('token');
+  NProgress.start()
   //console.log(token);
   if (to.meta.requiresAuth) {
     if (token) {
       store.dispatch('getUser');
       next()
+      NProgress.done()
     } else {
       store.dispatch('logOut');
       Message({
@@ -144,10 +148,14 @@ router.beforeEach((to, from, next) => {
         path: '/',
         /*query: {redirect: to.fullPath}*/
       })
+      NProgress.done()
     }
   } else {
     next()
+    NProgress.done()
   }
 });
-
+router.afterEach(() => {
+  NProgress.done() // 结束Progress
+})
 export default router;

@@ -50,9 +50,7 @@
               center: true,
               duration: 2000
             });
-            //console.log(res);
             window.localStorage.setItem('userinfo', JSON.stringify(res.data.data));
-            //console.log(JSON.parse(window.localStorage.getItem('userinfo')));
             this.$store.dispatch('getUser');
             this.$router.push('/index')
           } else {
