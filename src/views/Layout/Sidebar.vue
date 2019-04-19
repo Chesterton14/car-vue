@@ -1,8 +1,10 @@
 <template>
   <el-menu
     class="el-menu-vertical-demo"
-    @open="handleOpen" @close="handleClose"
-    background-color="#304156" text-color="#BFCBD9"
+    @open="handleOpen"
+    @close="handleClose"
+    background-color="#304156"
+    text-color="#BFCBD9"
   >
     <el-submenu v-for="(item1,index) in demo" :key="index" :index="item1.path">
       <template slot="title">

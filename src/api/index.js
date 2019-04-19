@@ -171,6 +171,14 @@ export const deleteCar = carId => {
 export const getUserCarPoints = (userId, currentPage, pageSize) => {
   return instance.get('/cars/points/userCar?userId=' + userId + '&currentPage=' + currentPage + '&pageSize=' + pageSize)
 };
+/*查找行驶轨迹*/
+export const searchCar = (carId,startTime,endTime)=>{
+  return instance.post('/cars/search',{
+    carId:carId,
+    startTime:startTime,
+    endTime:endTime
+  })
+}
 
 
 
