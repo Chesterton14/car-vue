@@ -205,12 +205,14 @@
               this.$message({message: '数据库没有该车辆的数据！'})
             } else {
               if (node.isMobile == 1){
+                this.map.clearOverlays();
                 this.$message({message: "移动终端", center: true});
                 let pointed = transform(res.data.latest.lat,res.data.latest.lng)
                 console.log(pointed);
                 this.pointId=res.data.latest.pointId;
                 this.newMarker(pointed.bd_lat, pointed.bd_lon);
               }else{
+                this.map.clearOverlays();
                 this.$message({message: "该车辆未在线，已显示车辆最后位置", center: true});
                 this.pointId=res.data.latest.pointId;
                 this.newMarker(res.data.latest.lat, res.data.latest.lng);
