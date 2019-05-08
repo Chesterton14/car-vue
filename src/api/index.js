@@ -7,7 +7,7 @@ if (window.localStorage.getItem('token')) {
 }
 
 export let instance = Axios.create({
-  baseURL: 'http://localhost:4000'
+  baseURL: 'http://119.29.144.11:4000'
 });
 //request拦截器
 instance.interceptors.request.use(
