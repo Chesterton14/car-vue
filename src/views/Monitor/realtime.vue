@@ -198,7 +198,7 @@
                 this.map.clearOverlays();
                 this.$message({message: "移动终端", center: true});
                 this.pointId = res.data.latest.pointId;
-                this.newMarker(res.data.latest.bd_lat, res.data.latest.bd_lon);
+                this.newMarker(res.data.latest.lat, res.data.latest.lng);
               } else {
                 this.map.clearOverlays();
                 this.$message({message: "该车辆未在线，已显示车辆最后位置", center: true});

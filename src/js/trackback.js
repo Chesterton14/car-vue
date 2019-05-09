@@ -72,8 +72,8 @@ export let trackback = (points, map, Begin, End) => {
     if (pointsLen == 0) {
       return;
     }
-    var myIcon = new BMap.Icon("http://119.29.144.11:4000/img/car2.png", new BMap.Size(41, 34), {
-      offset: new BMap.Size(10, 10)
+    var myIcon = new BMap.Icon("http://119.29.144.11:4000/img/point.png", new BMap.Size(16, 16), {
+      //offset: new BMap.Size(10, 10)
     });
 
     // 创建标注对象并添加到地图
@@ -113,7 +113,7 @@ export let trackback = (points, map, Begin, End) => {
       linePoints.push(new BMap.Point(points[i].lng, points[i].lat));
     }
     var polyline = new BMap.Polyline(linePoints, {
-      strokeColor: "blue",
+      strokeColor: "black",
       strokeWeight: 2,
       strokeOpacity: 1
     }); //创建折线
