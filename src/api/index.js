@@ -46,10 +46,11 @@ instance.interceptors.response.use(
 
 /**********************登录验证相关api******************************/
 /*登录*/
-export const login = ({loginUser, loginPassword}) => {
+export const login = ({loginUser, loginPassword,vertifyCode}) => {
   return instance.post('/login', {
     username: loginUser,
-    password: loginPassword
+    password: loginPassword,
+    vertifycode:vertifyCode
   })
 };
 /*验证token*/
@@ -179,7 +180,9 @@ export const searchCar = (carId,startTime,endTime)=>{
     endTime:endTime
   })
 }
-
+export const getCode =()=>{
+  return instance.get('/getCode?'+Math.random())
+}
 
 
 

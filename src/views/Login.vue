@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form class="login-form" :model="loginForm">
-      <h2 class="title">广航车联网监控平台</h2>
+      <h2 class="title">车联网监控平台</h2>
       <el-form-item>
         <span class="svg-container">
             <i class="iconfont icon-people"></i>
@@ -14,6 +14,14 @@
         </span>
         <el-input v-model="loginForm.password" name="password" type="password" placeholder="密码"></el-input>
       </el-form-item>
+      <el-form-item  style="width: 240px;position: relative">
+        <span class="svg-container">
+            <i class="iconfont icon-lock"></i>
+        </span>
+        <el-input v-model="loginForm.vertifyCode"  name="code" type="text" placeholder="验证码" style="width: 150px"></el-input>
+        <span @click="getVertifyCode" v-html="code" style="position: absolute;margin-left: 45px;background-color: #ffffff;border-radius:4px;height: 53.6px"></span>
+
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%;" @click="toLogin" >登录</el-button>
       </el-form-item>
@@ -22,7 +30,7 @@
 </template>
 
 <script>
-  import {doLogin, getIndex} from "../api";
+  import {doLogin, getIndex,getCode} from "../api";
 
   export default {
     name: "Login",
@@ -30,26 +38,24 @@
       return {
         loginForm: {
           username: 'admin',
-          password: '123'
+          password: '123',
+          vertifyCode:''
         },
+        code:''
       }
     },
     created(){
       this.keyupSubmit()
+      this.getVertifyCode()
     },
     methods: {
       toLogin() {
         this.$store.dispatch('toLogin', {
           loginUser: this.loginForm.username,
-          loginPassword: this.loginForm.password
+          loginPassword: this.loginForm.password,
+          vertifyCode:this.loginForm.vertifyCode
         }).then((res) => {
           if (res.data.status === 200) {
-            this.$message({
-              message: res.data.msg,
-              type: 'success',
-              center: true,
-              duration: 2000
-            });
             window.localStorage.setItem('userinfo', JSON.stringify(res.data.data));
             this.$store.dispatch('getUser');
             this.$router.push('/index')
@@ -70,6 +76,10 @@
             duration: 1500
           });
         })
+      },
+      async getVertifyCode(){
+        let res = await getCode()
+        this.code = res.data;
       },
       keyupSubmit(){
         document.onkeydown=e=>{
