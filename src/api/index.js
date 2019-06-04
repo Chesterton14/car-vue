@@ -1,53 +1,9 @@
-import Axios from 'axios';
-import router from '../router'
-import {Message} from "element-ui";
-
-if (window.localStorage.getItem('token')) {
-  Axios.defaults.headers.common['Authorization'] = `Bearer ` + window.localStorage.getItem('token')
-}
-
-export let instance = Axios.create({
-  baseURL: 'http://119.29.144.11:4000'
-});
-//request拦截器
-instance.interceptors.request.use(
-  config => {
-    return config;
-  },
-  error => {
-    console.log(error);
-    return Promise.reject(error.response)
-  }
-)
-// response拦截器
-instance.interceptors.response.use(
-  response => {
-    return response
-  },
-  error => {
-    if (error.response) {
-      switch (error.response.status) {
-        case 401:
-          Message({
-            message: "登录以过期",
-            type: 'error',
-            center: true,
-            duration: 1500
-          });
-          router.replace({
-            path: '/',
-            query: {redirect: router.currentRoute.fullPath} // 将跳转的路由path作为参数，登录成功后跳转到该路由
-          })
-      }
-    }
-    return Promise.reject(error.response)
-  }
-);
+import service from '../utils/request'
 
 /**********************登录验证相关api******************************/
 /*登录*/
 export const login = ({loginUser, loginPassword,vertifyCode}) => {
-  return instance.post('/login', {
+  return service.post('/login', {
     username: loginUser,
     password: loginPassword,
     vertifycode:vertifyCode
@@ -55,17 +11,17 @@ export const login = ({loginUser, loginPassword,vertifyCode}) => {
 };
 /*验证token*/
 export const getUserInfo = () => {
-  return instance.get('/profile')
+  return service.get('/profile')
 };
 
 /**********************用户相关api******************************/
 /*获取用户信息*/
 export const getUser = (id) => {
-  return instance.get("/users/finduser?id='" + id + "'")
+  return service.get("/users/finduser?id='" + id + "'")
 };
 /*更新用户信息*/
 export const updateUser = (id, form) => {
-  return instance.put("/users/update?id='" + id + "'", {
+  return service.put("/users/update?id='" + id + "'", {
     username: form.username,
     password: form.password,
     comId: form.comId,
@@ -74,15 +30,15 @@ export const updateUser = (id, form) => {
 };
 /*获取所有用户*/
 export const getAlluser = () => {
-  return instance.get('/users');
+  return service.get('/users');
 };
 /*删除用户*/
 export const deleteUser = (id) => {
-  return instance.delete('/users/delete?id=' + id)
+  return service.delete('/users/delete?id=' + id)
 };
 /*新增用户*/
 export const newUserapi = (form) => {
-  return instance.post('/users/new', {
+  return service.post('/users/new', {
     username: form.username,
     password: form.password,
     comId: form.comId,
@@ -90,19 +46,18 @@ export const newUserapi = (form) => {
   })
 };
 
-
 /**********************公司相关api******************************/
 /*查找公司*/
 export const getCom = (comId) => {
-  return instance.get("/company/search?comId='" + comId + "'",)
+  return service.get("/company/search?comId='" + comId + "'",)
 };
 /*获取所有公司*/
 export const getAllcom = () => {
-  return instance.get('/company/');
+  return service.get('/company/');
 };
 /*更新公司信息*/
 export const updateCom = (comId, form) => {
-  return instance.put("/company/update?comId='" + comId + "'", {
+  return service.put("/company/update?comId='" + comId + "'", {
     comName: form.comName,
     comPhone: form.comPhone,
     comAddress: form.comAddress
@@ -110,11 +65,11 @@ export const updateCom = (comId, form) => {
 };
 /*删除公司*/
 export const deleteCom = (comId) => {
-  return instance.delete("/company/delete?comId='" + comId + "'")
+  return service.delete("/company/delete?comId='" + comId + "'")
 };
 /*新增公司*/
 export const newCom = (form) => {
-  return instance.post('/company/new', {
+  return service.post('/company/new', {
     comName: form.comName,
     comPhone: form.comPhone,
     comAddress: form.comAddress
@@ -124,29 +79,29 @@ export const newCom = (form) => {
 /**********************角色相关api******************************/
 /*获取所有角色*/
 export const getAllroles = () => {
-  return instance.get('/role')
+  return service.get('/role')
 };
 /*根据roleId查找角色*/
 export const getRole = (roleId) => {
-  return instance.get("/role/search?roleId=" + roleId)
+  return service.get("/role/search?roleId=" + roleId)
 };
 
 /**********************car相关api******************************/
 /*获取所有车辆*/
 export const getAllcars = () => {
-  return instance.get('/cars')
+  return service.get('/cars')
 };
 /*获取指定车辆的轨迹数据*/
 export const getCar = (carId) => {
-  return instance.get('/cars/points?carId=' + carId)
+  return service.get('/cars/points?carId=' + carId)
 };
 /*获取指定用户的车辆*/
 export const getUserCar = userId => {
-  return instance.get('/cars/userCars?userId=' + userId)
+  return service.get('/cars/userCars?userId=' + userId)
 };
 /*新增车辆*/
 export const newCar = form => {
-  return instance.post('/cars/newCar', {
+  return service.post('/cars/newCar', {
     label: form.label,
     userId: form.userId,
     username: form.username
@@ -154,34 +109,35 @@ export const newCar = form => {
 };
 /*更新车辆*/
 export const updateCar = (carId, form) => {
-  return instance.put('/cars/update?carId=' + carId, {
+  return service.put('/cars/update?carId=' + carId, {
     label: form.label
   })
 };
 /*更新车辆位置数据*/
 export const updateCarPosition = (pointId, address) => {
-  return instance.put('/cars/update/position?pointId=' + pointId, {
+  return service.put('/cars/update/position?pointId=' + pointId, {
     position: address
   })
 };
 /*删除车辆*/
 export const deleteCar = carId => {
-  return instance.delete('/cars/delete?carId=' + carId)
+  return service.delete('/cars/delete?carId=' + carId)
 };
 /*获取用户车辆的数据*/
 export const getUserCarPoints = (userId, currentPage, pageSize) => {
-  return instance.get('/cars/points/userCar?userId=' + userId + '&currentPage=' + currentPage + '&pageSize=' + pageSize)
+  return service.get('/cars/points/userCar?userId=' + userId + '&currentPage=' + currentPage + '&pageSize=' + pageSize)
 };
 /*查找行驶轨迹*/
 export const searchCar = (carId,startTime,endTime)=>{
-  return instance.post('/cars/search',{
+  return service.post('/cars/search',{
     carId:carId,
     startTime:startTime,
     endTime:endTime
   })
 }
+/*获取验证码*/
 export const getCode =()=>{
-  return instance.get('/getCode?'+Math.random())
+  return service.get('/getCode?'+Math.random())
 }
 
 

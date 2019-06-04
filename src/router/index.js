@@ -134,10 +134,8 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     if (token) {
       store.dispatch('getUser');
-      setTimeout(()=>{
-        next()
-        NProgress.done() // 结束Progress
-      },100)
+      next()
+      NProgress.done() // 结束Progress
     } else {
       store.dispatch('logOut');
       Message({
@@ -146,27 +144,19 @@ router.beforeEach((to, from, next) => {
         center: true,
         duration: 1500
       });
-
-      setTimeout(()=>{
-        next({
-          path: '/',
-          /*query: {redirect: to.fullPath}*/
-        })
-        NProgress.done() // 结束Progress
-      },100)
+      next({
+        path: '/',
+        /*query: {redirect: to.fullPath}*/
+      })
+      NProgress.done() // 结束Progress
     }
   } else {
-
-    setTimeout(()=>{
-      next()
-      NProgress.done() // 结束Progress
-    },100)
+    next()
+    NProgress.done() // 结束Progress
   }
 });
 router.afterEach(() => {
-  setTimeout(()=>{
-    NProgress.done() // 结束Progress
-  },100)
-
+  NProgress.done() // 结束Progress
 })
+
 export default router;

@@ -1,6 +1,6 @@
 import * as types from './types'
-import { instance, login, getUserInfo } from '../api'
-
+import {  login, getUserInfo } from '../api'
+import service from '../utils/request'
 export default {
   toLogin ({ commit }, info) {
     return new Promise((resolve, reject) => {
@@ -8,7 +8,7 @@ export default {
         if (res.status === 200) {
           commit(types.LOGIN, res.data.token);
           commit(types.LOGINSTATUS, true);
-          instance.defaults.headers.common['Authorization'] = `Bearer ` + res.data.token;
+          service.defaults.headers.common['Authorization'] = `Bearer ` + res.data.token;
           window.localStorage.setItem('token', res.data.token);
           resolve(res)
         }
