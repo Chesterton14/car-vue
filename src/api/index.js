@@ -139,9 +139,3 @@ export const searchCar = (carId,startTime,endTime)=>{
 export const getCode =()=>{
   return service.get('/getCode?'+Math.random())
 }
-
-
-
-
-
-
