@@ -6,7 +6,7 @@ import store from '../store/index'
 import {Message} from 'element-ui'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-
+NProgress.configure({ showSpinner: false }) // NProgress Configuration
 Vue.use(Router)
 
 const router = new Router({
