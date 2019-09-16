@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form class="login-form" :model="loginForm">
-      <h2 class="title">车联网监控平台(Node)</h2>
+      <h2 class="title">车联网监控平台</h2>
       <el-form-item>
         <span class="svg-container">
             <i class="iconfont icon-people"></i>
